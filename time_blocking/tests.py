@@ -35,8 +35,33 @@ class UserRegistrationTests(APITestCase):
 
 # ######### login test cases ##########
 # ######### start ##########
-# class UserLoginTests(APITestCase):
-#     def setUp(self):
+class UserLoginTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@example.com',
+            password='testpass'
+        )
+    
+    def test_login_success(self):
+        url = reverse('login')
+        data = {
+            "username": "testuser",
+            "password": "testpass"
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('message', response.data)
+        self.assertEqual(response.data['message'], 'Login successful')
 
-
+    def test_login_fail_wrong_password(self):
+        url = reverse('login')
+        data = {
+            "username": "testuser",
+            "password": "wrongpass"
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertIn('error', response.data)
+        self.assertEqual(response.data['error'], 'Invalid credentials')
 # ######### end ##########
