@@ -1,0 +1,35 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deep Work</title>
+    
+  </head>
+  <body>
+    <h1> info list </h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>name</th>
+                <th>psw</th>
+                <th>email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in UserInfo %}
+            <tr>
+                <td>{{obj.id}}</td>
+                <td>{{obj.username}}</td>
+                <td>{{obj.password_hash}}</td>
+                <td>{{obj.email}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </body>
+</html>

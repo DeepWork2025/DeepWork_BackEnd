@@ -19,12 +19,13 @@ from django.urls import re_path, path
 from time_blocking import views
 from django.views.generic import TemplateView
 
+
 urlpatterns = [
     # path('admin/', admin.site.urls),
     # path('', views.index),
     # path('login/', views.login),
     # path('register/', views.register),
     # re_path('', TemplateView.as_view(template_name="index.html"), name='home'),
-    path('api/login/', views.login_view, name='login'),
-    path('api/register/', views.register_view, name='register'),
+    path('login/', views.login_view, name='login'),
+    path('register/', views.register_view, name='register'),
 ]
