@@ -1,12 +1,13 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 # Create your models here.
 class UserInfo(models.Model):
     # user_id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=50, null=True, blank=True)
-    email = models.CharField(max_length=100, null=True, blank=True)
-    password_hash = models.CharField(max_length=255, null=True, blank=True)
+    # put info from auth_user here
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+
     time_zone = models.CharField(max_length=50, null=True, blank=True)
     language = models.CharField(max_length=10, default='en')
     create_at = models.DateTimeField(default=timezone.now)
@@ -15,7 +16,7 @@ class UserInfo(models.Model):
         db_table = 'UserInfo'
     
     def __str__(self):
-        return self.username
+        return self.user.username
 
 # class TimeBlock(models.Model):
 #     LABLE_CHOISES = (

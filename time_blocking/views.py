@@ -5,6 +5,7 @@ from rest_framework import status
 from django.conf import settings
 from django.contrib.auth import authenticate
 from .serializers import RegisterSerializer
+from .models import UserInfo
 
 # Create your views here.
 
@@ -16,6 +17,7 @@ def register_view(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+
         return Response({'message': "Successfully registered!"}, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
