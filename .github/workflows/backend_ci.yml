@@ -15,8 +15,12 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: deepwork
         ports:
-          - 3306: 3306
-        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
+          - "3306:3306"
+        options: >-
+          --health-cmd="mysqladmin ping --silent" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=3
 
     steps:
       - name: Check out repository
@@ -33,7 +37,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Database Migrate
-        run: python manage.py migrates
+        run: python manage.py migrate
 
       - name: Run Tests
         run: python manage.py test
