@@ -18,23 +18,23 @@ jobs:
           - 3306: 3306
         options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=3
 
-      steps:
-        - name: Check out repository
-          uses: actions/checkout@v4.2.2
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4.2.2
 
-        - name: Set up Python
-          uses: actions/setup-python@v5.4.0
-          with:
-            python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version: "3.10"
 
-        - name: Install requirements
-          run: |
-            pip install --upgrade pip
-            pip install -r requirements.txt
+      - name: Install requirements
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
 
-        - name: Database Migrate
-          run: python manage.py migrates
+      - name: Database Migrate
+        run: python manage.py migrates
 
-        - name: Run Tests
-          run: python manage.py test
+      - name: Run Tests
+        run: python manage.py test
           
