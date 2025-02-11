@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'Django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'deepwork_v2',
+        'NAME': 'deepwork',
         'USER': 'root',
         'PASSWORD': 'Pass1234',
         'HOST': 'localhost',
