@@ -11,7 +11,7 @@ jobs:
       MYSQL_DATABASE: deepwork
       MYSQL_USER: root
       MYSQL_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-      MYSQL_HOST: 127.0.0.1
+      MYSQL_HOST: db
       MYSQL_PORT: 3306
 
     services:
@@ -57,7 +57,7 @@ jobs:
         run: sleep 15
 
       - name: Database Migrate
-        run: docker-compose exec django python manage.py migrate
+        run: docker-compose exec -T django python manage.py migrate
       
       - name: Run Tests
         run: docker-compose exec django python manage.py test
