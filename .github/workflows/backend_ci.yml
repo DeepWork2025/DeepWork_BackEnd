@@ -60,7 +60,7 @@ jobs:
         run: docker-compose exec -T django python manage.py migrate
       
       - name: Run Tests
-        run: docker-compose exec django python manage.py test
+        run: docker-compose exec -T django python manage.py test
 
       - name: Shut down
         if: always()
