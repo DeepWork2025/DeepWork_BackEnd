@@ -17,10 +17,13 @@ class UserRegistrationTests(APITestCase):
             "password": "testpass"
         }
         response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertIn('message', response.data)
 
-        # assert again to check database
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        self.assertIn('message', response.data)
+        self.assertIn('access', response.data)
+        self.assertIn('refresh', response.data)
+        
         self.assertTrue(User.objects.filter(username="testuser").exists())
 
     def test_register_fail_missing_username(self):
@@ -50,9 +53,13 @@ class UserLoginTests(APITestCase):
             "password": "testpass"
         }
         response = self.client.post(url, data, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
         self.assertIn('message', response.data)
         self.assertEqual(response.data['message'], 'Login successful')
+        self.assertIn('access', response.data)
+        self.assertIn('refresh', response.data)
 
     def test_login_fail_wrong_password(self):
         url = reverse('login')
