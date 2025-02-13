@@ -5,27 +5,31 @@ from rest_framework import status
 from django.conf import settings
 from django.contrib.auth import authenticate
 from .serializers import RegisterSerializer
-from .models import UserInfo
+from rest_framework_simplejwt.tokens import RefreshToken
 
-# Create your views here.
 
 @api_view(['POST'])
 def register_view(request):
     '''
-    user regisert with API
+    user regisert with API, if register successfully, return tokens
     '''
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        user = serializer.save()
 
-        return Response({'message': "Successfully registered!"}, status=status.HTTP_201_CREATED)
-    else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'message': 'Successfully registered!',
+            'access': str(refresh.access_token),  # return access_token
+            'refresh': str(refresh),  # return refresh_token
+        }, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def login_view(request):
     '''
-    User login with API
+    User login with API, if login succesfully, return tokens
     '''
     username = request.data.get('username')
     password = request.data.get('password')
@@ -33,7 +37,12 @@ def login_view(request):
     user = authenticate(username=username, password=password)
 
     if user is not None:
-        return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'message': 'Login successful',
+            'access': str(refresh.access_token),  # return access_token
+            'refresh': str(refresh),  # return refresh_token
+        }, status=status.HTTP_200_OK)
     
     else:
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)

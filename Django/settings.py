@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,8 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'time_blocking.apps.TimeBlockingConfig',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
+    'time_blocking.apps.TimeBlockingConfig',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'Django.urls'
@@ -80,8 +84,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.getenv('MYSQL_DATABASE', 'deepwork'),
-        'USER': os.getenv('MYSQL_USER', 'root'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'root'),
+        'USER': os.getenv('MYSQL_USER', 'django'),
+        'PASSWORD': os.getenv('MYSQL_ROOT_PASSWORD', 'django123'),
         'HOST': os.getenv('MYSQL_HOST', 'db'),
         'PORT': os.getenv('MYSQL_PORT', '3306'),
         'OPTIONS': {
@@ -127,7 +131,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 # STATICFILES_DIRS = [BASE_DIR / "static"]
-# 让 Django 在每个 app 的 static 目录中查找静态文件
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -137,3 +142,18 @@ STATICFILES_FINDERS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# For development only
+CORS_ALLOW_ALL_ORIGINS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # Token can valid for 1 day
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=3),  # Refresh Token can valid for 3 days
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
