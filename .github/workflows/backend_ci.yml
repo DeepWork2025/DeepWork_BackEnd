@@ -1,4 +1,4 @@
-name: Backend CI
+name: Backend CICD
 
 on:
   push:
@@ -66,10 +66,28 @@ jobs:
         if: always()
         run: docker-compose -f docker-compose.yml down
       
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build and Push Docker Image to ECR
+      - name: Build Docker image
         run: |
           docker build -t ${{ secrets.ECR_REPO }}:latest .
+
+      - name: Push Docker image to Amazon ECR
+        run: |
           docker push ${{ secrets.ECR_REPO }}:latest
+
+      - name: Deploy via SSH to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY_EC2 }}
+          script: |
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO }}
+            docker-compose pull
+            docker-compose up -d --force-recreate
