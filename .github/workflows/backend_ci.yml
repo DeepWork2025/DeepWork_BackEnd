@@ -65,4 +65,12 @@ jobs:
       - name: Shut down
         if: always()
         run: docker-compose -f docker-compose.yml down
-          
+      
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push Docker Image to ECR
+        run: |
+          docker build -t ${{ secrets.ECR_REPO }}:latest .
+          docker tag ${{ secrets.ECR_REPO }}:latest ${{ secrets.ECR_REPO }}:latest
+          docker push ${{ secrets.ECR_REPO }}:latest
