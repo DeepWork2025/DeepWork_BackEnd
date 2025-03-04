@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build-and-test:
+  build-test-deploy:
     runs-on: ubuntu-latest
     env:
       MYSQL_DATABASE: deepwork
@@ -91,6 +91,5 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY_EC2 }}
           script: |
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REPO }}
             docker-compose pull
             docker-compose up -d --force-recreate
