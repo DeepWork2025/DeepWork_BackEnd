@@ -91,5 +91,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY_EC2 }}
           script: |
-            docker compose pull
-            docker compose up -d --force-recreate
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+            docker login --username AWS --password-stdin ${{ secrets.ECR_REPO }}
+            docker-compose pull
+            docker-compose up -d --force-recreate
